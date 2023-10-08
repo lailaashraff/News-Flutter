@@ -27,7 +27,9 @@ class CategoryDetails extends StatelessWidget {
               children: [
                 Text('Something went wrong'),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    ApiManager.getData();
+                  },
                   child: Text('Try again'),
                 )
               ],
@@ -38,7 +40,9 @@ class CategoryDetails extends StatelessWidget {
               children: [
                 Text(snapshot.data?.message ?? ""),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    ApiManager.getData();
+                  },
                   child: Text('Try again'),
                 )
               ],
