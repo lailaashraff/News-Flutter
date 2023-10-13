@@ -10,6 +10,7 @@ class MyTheme {
   static Color yellowColor = Color(0xffF2D352);
   static Color whiteColor = Color(0xFFFFFFFF);
   static Color grayColor = Color(0xFF595757);
+  static Color darkGrayColor = Color(0xFF4F5A69);
 
   static ThemeData lightMode = ThemeData(
       primaryColor: primaryLight,
@@ -27,7 +28,7 @@ class MyTheme {
         titleLarge: TextStyle(
             fontWeight: FontWeight.bold, fontSize: 22, color: whiteColor),
         titleSmall: TextStyle(
-            fontWeight: FontWeight.bold, fontSize: 18, color: Colors.black),
+            fontWeight: FontWeight.bold, fontSize: 20, color: Colors.black),
         bodyMedium: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 18,

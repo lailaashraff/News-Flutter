@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:news_app/home_screen.dart';
 import 'package:news_app/my_theme.dart';
-import 'package:news_app/screens/category_details.dart';
-import 'package:news_app/screens/home_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,10 +15,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: MyTheme.lightMode,
-      initialRoute: CategoryDetails.routeName,
+      initialRoute: HomeScreen.routeName,
       routes: {
         HomeScreen.routeName: (context) => HomeScreen(),
-        CategoryDetails.routeName: (context) => CategoryDetails()
+        //CategoryDetails.routeName: (context) => CategoryDetails()
       },
     );
   }

@@ -10,9 +10,9 @@ class ApiManager {
   static const String newsApi = '/v2/everything';
 
   ///https://newsapi.org/v2/top-headlines/sources?apiKey=3cc56814e8d24aefab84c8d718123a18
-  static Future<SourceResponse> getData() async {
-    Uri url = Uri.https(
-        basicUrl, sourceApi, {'apiKey': '3cc56814e8d24aefab84c8d718123a18'});
+  static Future<SourceResponse> getData(String categoryId) async {
+    Uri url = Uri.https(basicUrl, sourceApi,
+        {'apiKey': '3cc56814e8d24aefab84c8d718123a18', 'category': categoryId});
 
     try {
       var response = await http.get(url);

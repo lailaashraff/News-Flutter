@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:news_app/components/news_item.dart';
+import 'package:news_app/api_manager.dart';
+import 'package:news_app/models/CategoryDM.dart';
+import 'package:news_app/my_theme.dart';
+import 'package:news_app/tabs/tab_container.dart';
 
-import '../api_manager.dart';
-import '../models/SourceResponse.dart';
-import '../my_theme.dart';
+class CategoryDetails extends StatefulWidget {
+  static const String routeName = 'category-screen';
+  CategoryDM category;
 
-class NewsContainer extends StatelessWidget {
-  Source source;
+  CategoryDetails({required this.category});
 
-  NewsContainer({required this.source});
+  @override
+  State<CategoryDetails> createState() => _CategoryDetailsState();
+}
 
+class _CategoryDetailsState extends State<CategoryDetails> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: ApiManager.getNewsBySourceId(source.id ?? ''),
+      future: ApiManager.getData(widget.category.id),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
@@ -27,7 +32,8 @@ class NewsContainer extends StatelessWidget {
               Text('Something went wrong'),
               ElevatedButton(
                 onPressed: () {
-                  ApiManager.getNewsBySourceId(source.id ?? '');
+                  ApiManager.getData(widget.category.id);
+                  setState(() {});
                 },
                 child: Text('Try again'),
               )
@@ -40,20 +46,16 @@ class NewsContainer extends StatelessWidget {
               Text(snapshot.data?.message ?? ""),
               ElevatedButton(
                 onPressed: () {
-                  ApiManager.getNewsBySourceId(source.id ?? '');
+                  ApiManager.getData(widget.category.id);
+                  setState(() {});
                 },
                 child: Text('Try again'),
               )
             ],
           );
         }
-        var newsList = snapshot.data?.articles ?? [];
-        return ListView.builder(
-          itemBuilder: (context, index) {
-            return NewsItem(news: newsList[index]);
-          },
-          itemCount: newsList.length,
-        );
+        var sourcesList = snapshot.data?.sources ?? [];
+        return TabContainer(sourceList: sourcesList);
       },
     );
   }
