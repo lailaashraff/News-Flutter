@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:news_app/category/category_details_view_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_app/category/cubit/category_details_view_model.dart';
+import 'package:news_app/category/cubit/states.dart';
 import 'package:news_app/models/CategoryDM.dart';
 import 'package:news_app/my_theme.dart';
 import 'package:news_app/tabs/tab_container.dart';
-import 'package:provider/provider.dart';
 
 class CategoryDetails extends StatefulWidget {
   static const String routeName = 'category-screen';
@@ -16,45 +17,45 @@ class CategoryDetails extends StatefulWidget {
 }
 
 class _CategoryDetailsState extends State<CategoryDetails> {
+  CategoryDetailsViewModel viewModel = CategoryDetailsViewModel();
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    viewModel.getSources(widget.category.id);
+    viewModel.getSourceByCategoryId(widget.category.id);
   }
-
-  CategoryDetailsViewModel viewModel = CategoryDetailsViewModel();
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => viewModel,
-      child: Consumer<CategoryDetailsViewModel>(
-        builder: (context, viewModel, child) {
-          if (viewModel.errorMessage != null) {
-            return Column(
-              children: [
-                Text(viewModel.errorMessage!),
-                ElevatedButton(
-                  onPressed: () {
-                    viewModel.getSources(widget.category.id);
-                  },
-                  child: Text('Try again'),
-                )
-              ],
-            );
-          } else if (viewModel.sourceList == null) {
+    return BlocBuilder<CategoryDetailsViewModel, CategorySourceState>(
+        bloc: viewModel,
+        builder: (context, state) {
+          if (state is SourceLoadingState) {
             return Center(
               child: CircularProgressIndicator(
                 color: MyTheme.primaryLight,
               ),
             );
-          } else {
-            return TabContainer(sourceList: viewModel.sourceList!);
+          } else if (state is SourceErrorState) {
+            return Column(
+              children: [
+                Text(state.errorMsg!),
+                ElevatedButton(
+                  onPressed: () {
+                    viewModel.getSourceByCategoryId(widget.category.id);
+                    setState(() {});
+                  },
+                  child: Text('Try again'),
+                )
+              ],
+            );
+          } else if (state is SourceSuccessState) {
+            return TabContainer(sourceList: state.sourcesList!);
           }
-        },
-      ),
-    );
+          return Container();
+        });
+
     // return FutureBuilder(
     //   future: ApiManager.getData(widget.category.id),
     //   builder: (context, snapshot) {
@@ -92,9 +93,38 @@ class _CategoryDetailsState extends State<CategoryDetails> {
     //         ],
     //       );
     //     }
-    //     //var sourcesList = snapshot.data?.sources ?? [];
+    //     var sourcesList = snapshot.data?.sources ?? [];
     //     return TabContainer(sourceList: sourcesList);
     //   },
+    // );
+
+    // return ChangeNotifierProvider(
+    //   create: (context) => viewModel,
+    //   child: Consumer<CategoryDetailsViewModel>(
+    //     builder: (context, viewModel, child) {
+    //       if (viewModel.errorMessage != null) {
+    //         return Column(
+    //           children: [
+    //             Text(viewModel.errorMessage!),
+    //             ElevatedButton(
+    //               onPressed: () {
+    //                 viewModel.getSources(widget.category.id);
+    //               },
+    //               child: Text('Try again'),
+    //             )
+    //           ],
+    //         );
+    //       } else if (viewModel.sourceList == null) {
+    //         return Center(
+    //           child: CircularProgressIndicator(
+    //             color: MyTheme.primaryLight,
+    //           ),
+    //         );
+    //       } else {
+    //         return TabContainer(sourceList: viewModel.sourceList!);
+    //       }
+    //     },
+    //   ),
     // );
   }
 }

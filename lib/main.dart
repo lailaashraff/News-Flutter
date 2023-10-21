@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/home_screen.dart';
 import 'package:news_app/my_theme.dart';
+import 'package:news_app/tabs/tab_container_view_model.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(
+      create: (context) => TabContainerViewModel(),
+    )
+  ], child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
