@@ -9,7 +9,6 @@ import 'news_item.dart';
 
 class NewsContainer extends StatefulWidget {
   Source source;
-
   NewsContainer({required this.source});
 
   @override
@@ -18,12 +17,30 @@ class NewsContainer extends StatefulWidget {
 
 class _NewsContainerState extends State<NewsContainer> {
   NewsContainerViewModel viewModel = NewsContainerViewModel();
+  ScrollController scrollController = ScrollController();
+  late var newsList;
+  bool hasMore = true;
+  bool isLoading = false;
+
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    viewModel.getNewsArticlesBySourceId(widget.source.id!);
+    scrollController.addListener(() {
+      if (scrollController.position.pixels ==
+          scrollController.position.maxScrollExtent
+      ) {
+        fetchMore();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    scrollController.dispose();
   }
 
   @override
@@ -84,6 +101,7 @@ class _NewsContainerState extends State<NewsContainer> {
     return FutureBuilder(
       future: ApiManager.getNewsBySourceId(widget.source.id ?? ''),
       builder: (context, snapshot) {
+        newsList = snapshot.data?.articles ?? [];
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
             child: CircularProgressIndicator(
@@ -116,22 +134,33 @@ class _NewsContainerState extends State<NewsContainer> {
             ],
           );
         }
-        var newsList = snapshot.data?.articles ?? [];
+
         return ListView.builder(
+          controller: scrollController,
           itemBuilder: (context, index) {
-            return InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => NewsArticle(news: newsList[index]),
-                    ),
-                  );
-                  setState(() {});
-                },
-                child: NewsItem(news: newsList[index]));
+            if (index < newsList.length) {
+              return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            NewsArticle(news: newsList[index]),
+                      ),
+                    );
+                    setState(() {});
+                  },
+                  child: NewsItem(news: newsList[index]));
+            } else {
+              return Center(
+                  child: hasMore
+                      ? CircularProgressIndicator(
+                          color: MyTheme.primaryLight,
+                        )
+                      : Text('No More Data To Load'));
+            }
           },
-          itemCount: newsList.length,
+          itemCount: newsList.length + 1,
         );
       },
     );
@@ -170,4 +199,21 @@ class _NewsContainerState extends State<NewsContainer> {
     //   ),
     // );
   }
+
+  Future fetchMore() async {
+    if (isLoading) return;
+    isLoading = true;
+
+    var newsResponse = await ApiManager.getNewsBySourceId(widget.source.id!);
+    setState(() {
+      newsList.addAll(newsResponse.articles!);
+      if (newsList.length < ApiManager.pageLimit) {
+        hasMore = false;
+      }
+    });
+    ApiManager.currentPage++;
+    isLoading = false;
+  }
+
+
 }

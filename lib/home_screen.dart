@@ -26,12 +26,14 @@ class _HomeScreenState extends State<HomeScreen> {
         Scaffold(
           appBar: AppBar(
             title: Text(selectedMenuItem == HomeDrawer.settings
-                ? 'Settings'
-                : selectedCategory == null
-                    ? 'News App'
-                    : selectedCategory!.title),
-            centerTitle: true,
-          ),
+                  ? 'Settings'
+                  : selectedCategory == null
+                      ? 'News App'
+                      : selectedCategory!.title),
+              centerTitle: true,
+              actions: [
+                IconButton(onPressed: () {}, icon: Icon(Icons.search))
+              ]),
           drawer: HomeDrawer(onSideTap: onSideTap),
           body: selectedMenuItem == HomeDrawer.settings
               ? Settings()

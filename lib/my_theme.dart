@@ -24,6 +24,11 @@ class MyTheme {
               bottomRight: Radius.circular(35),
             ),
           )),
+      inputDecorationTheme: InputDecorationTheme(
+        activeIndicatorBorder: BorderSide.none,
+        enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+        focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+      ),
       textTheme: TextTheme(
         titleLarge: TextStyle(
             fontWeight: FontWeight.bold, fontSize: 22, color: whiteColor),
