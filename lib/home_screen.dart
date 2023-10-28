@@ -3,6 +3,7 @@ import 'package:news_app/category/category_details.dart';
 import 'package:news_app/category/category_fragment.dart';
 import 'package:news_app/home_drawer.dart';
 import 'package:news_app/models/CategoryDM.dart';
+import 'package:news_app/search/new_search_delegate.dart';
 import 'package:news_app/settings.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -32,7 +33,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       : selectedCategory!.title),
               centerTitle: true,
               actions: [
-                IconButton(onPressed: () {}, icon: Icon(Icons.search))
+                IconButton(
+                    onPressed: () => showSearch(
+                        context: context, delegate: NewSearchDelegate()),
+                    icon: Icon(Icons.search))
               ]),
           drawer: HomeDrawer(onSideTap: onSideTap),
           body: selectedMenuItem == HomeDrawer.settings

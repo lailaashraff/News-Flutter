@@ -17,8 +17,7 @@ class NewSearchDelegate extends SearchDelegate {
   @override
   Widget? buildLeading(BuildContext context) {
     return IconButton(
-        onPressed: () => Navigator.of(context).pop,
-        icon: Icon(Icons.arrow_back));
+        onPressed: () => Navigator.of(context).pop(), icon: Icon(Icons.close));
   }
 
   @override
